@@ -1,0 +1,13 @@
+{
+  "itemGroup.bleachfracturedworld": "Example Mod Tab",
+  "block.bleachfracturedworld.example_block": "Example Block",
+  "item.bleachfracturedworld.example_item": "Example Item",
+
+  "bleachfracturedworld.configuration.title": "Example Mod Configs",
+  "bleachfracturedworld.configuration.section.bleachfracturedworld.common.toml": "Example Mod Configs",
+  "bleachfracturedworld.configuration.section.bleachfracturedworld.common.toml.title": "Example Mod Configs",
+  "bleachfracturedworld.configuration.items": "Item List",
+  "bleachfracturedworld.configuration.logDirtBlock": "Log Dirt Block",
+  "bleachfracturedworld.configuration.magicNumberIntroduction": "Magic Number Text",
+  "bleachfracturedworld.configuration.magicNumber": "Magic Number"
+}
