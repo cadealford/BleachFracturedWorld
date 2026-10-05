@@ -311,6 +311,16 @@ Minimum regression cases: duplicate and stale ability requests; zero energy; can
 
 Each milestone records exact jar/version configuration, test scenario, expected result, observed result, logs and optional screenshots. Test development runs and the packaged jar on a clean instance. Do not treat a successful build as proof of gameplay. Keep test worlds separate and backed up before destructive tests.
 
+### NeoForge development lab rules
+
+The pinned production target is Minecraft 1.21.1 with NeoForge 21.1.252, Java 21 and Parchment 2024.11.17. The locally installed Minecraft 26.3 and 26.4 snapshot clients are not compatible test targets for this mod; use a separate 1.21.1 NeoForge profile and dedicated lab worlds so ordinary player worlds remain untouched.
+
+Create `MODLOG.md` at M0. For every material test, record the exact jar set, world/profile, command or scenario, expected and observed result, log location, screenshots when useful, failures and their resolved cause. This log is the source for future operator guidance and any field note; it must distinguish a development-run observation from a packaged-jar result.
+
+Use GameTests for deterministic server-side rules, but retain real-client checks for assets, animation, HUD and portal rendering. `gameTestServer` initializes only the Overworld, so it cannot prove Inner World or other custom-dimension behavior. For M5 dimension, arena and travel checks, run the normal headless development server, invoke `/test runall` there (optionally through an access-controlled local RCON session), and verify the created target dimension and return path in the server log.
+
+Register an explicit network protocol version before the first custom payload. A client or server with a mismatched `bleachfracturedworld` jar must be refused during login with a clear version diagnostic rather than failing later during gameplay.
+
 Operator diagnostics should expose cast denials, active sessions, route tickets, arena allocations, raid phases and restoration status. Privileged repair commands must validate targets, log changes and reconcile through the same services. Log IDs/reasons without leaking credentials or private profile data. Rate-limit denial logs under abusive traffic.
 
 Pack distribution uses pinned manifests and separate client/server lists. Do not build a custom launcher until a concrete distribution need justifies it. Saves, player data and local credentials are not managed pack artifacts and must never be overwritten by updates.
