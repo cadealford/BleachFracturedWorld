@@ -82,3 +82,25 @@ Update and review the combined written M1/debug-console specification, then revi
 - `syncClientDevelopmentMods` and `syncServerDevelopmentMods` mirror every canonical jar into the corresponding generated profile before launch.
 - The profiles keep separate logs, worlds, saves, and mutable configuration and may therefore run simultaneously.
 - The user exclusively performs all client/server launches, process management, and in-game testing. Agent verification is limited to code/configuration inspection, compilation, and non-game unit tests.
+
+## 2026-10-06 — Feature roadmap taxonomy
+
+### Decision
+
+- Adopt stable feature identifiers F01-F12 and feature-local milestone identifiers such as F01.M01.
+- Make `docs/ROADMAP.md` the authority for current scope, status, gate results, ownership, dependencies, and evidence references.
+- Retain the architecture as intended-behavior authority and this log as dated evidence authority.
+- Fully decompose F01 into F01.M01-F01.M08; leave F02-F12 at feature scope until each receives an approved specification.
+
+### Historical mapping
+
+- M0 maps to F01.M01; M1 maps to F01.M02.
+- M2 splits across F01.M03-F01.M06; M3's shared first slice maps to F01.M07.
+- M4-M10 distribute across F02-F12 as recorded in `docs/ROADMAP.md`.
+- Existing M1 filenames and earlier log entries remain unchanged as historical records and are annotated rather than renamed.
+
+### Current status
+
+- F01.M01 and F01.M02 are Implemented, not Accepted. Their implementation and automated gates pass, while the stable full-stack client, server, and multiplayer gates remain pending user verification.
+- F01.M03-F01.M08 are Not started.
+- This migration changed documentation only. It did not change gameplay code, Gradle configuration, runtime profiles, saves, worlds, or dependency jars, and it did not launch Minecraft or perform Git operations.

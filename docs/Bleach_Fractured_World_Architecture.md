@@ -36,7 +36,7 @@ Read-only inspection of the actual repository at `C:/Users/squid/Software dev/Bl
 | Mod version | 0.1.0 |
 | Current license setting | All Rights Reserved; preserve until deliberately changed |
 
-The repository began from renamed NeoForge template entry points. M1 has since replaced the template gameplay surface with the spiritual-profile vertical slice. External gameplay mods are supplied by the shared development stack in `run/mods/` rather than Gradle compile dependencies; the October 6, 2026 combined-client verification loaded the full stack alongside the development sources.
+The repository began from renamed NeoForge template entry points. F01.M02 has since replaced the template gameplay surface with the spiritual-profile vertical slice. External gameplay mods are supplied by the shared development stack in `run/mods/` rather than Gradle compile dependencies; the October 6, 2026 combined-client verification loaded the full stack alongside the development sources.
 
 Assumptions: Java Edition, a privately operated multiplayer server, placeholder assets for early slices, and one primary custom mod. Exact balance numbers, rare-release distribution, progression rates, and public-server capacity remain tuning decisions. Proposed defaults below are recommendations, not previously approved numerical rules.
 
@@ -284,25 +284,28 @@ Use vanilla placeholders first, then original/licensed models, sprites, animatio
 
 Presentation uses cast IDs and phase cues. Emitters and loops clean up on completion, interruption, despawn, travel and disconnect. Cap density and distance; provide reduced-effects and shader-compatible fallbacks. Never make a cinematic or particle library responsible for deciding whether an attack landed.
 
-## 19. Delivery sequence and acceptance gates
+## 19. Feature roadmap and acceptance gates
 
-Preserve the broad game while implementing complete slices. These gates replace speculative calendar promises.
+Preserve the broad game while implementing complete, testable slices. Large capabilities use stable feature identifiers `F01` through `F12`; milestones inside a feature use identifiers such as `F01.M03`. The canonical [roadmap](ROADMAP.md) owns current status, detailed F01 milestones, gate results, dependencies, and evidence links. This architecture owns the behavior and invariants those gates protect.
 
-| Milestone | Playable result | Required evidence |
-|---|---|---|
-| M0 — Baseline | Renamed mod on pinned toolchain | Build; client world; dedicated server; two clients connect; no client-class load on server |
-| M1 — Spiritual identity | Choose Shinigami/Quincy; save profile, show energy, and inspect/reset it through the development console | Death, reconnect and restart preserve durable state; invalid requests rejected; debug actions remain server-authoritative |
-| M2 — Combat loop | Bound sword, Quincy projectile, movement, one Hollow, rewards | Server hit authority; one reward per encounter; repeat-hit and energy checks |
-| M3 — Release loop | Spirit/trial, one Shikai/Bankai, one Quincy form | Shared admission, upkeep, interruption, modifiers and persistent cooldown verified |
-| M4 — Settlement loop | One colony, gigai, protector contract and guard interaction | External permissions respected; no copied body inventory; contract reward once |
-| M5 — Realms and travel | Basic Soul Society/Hueco Mundo, anchors, Dangai and private trial cells | Blocked destination, disconnected traveller, restart recovery and arena isolation |
-| M6 — Guild conflict | Guild roles, one raid objective, offline policy, bounded destruction | Single outcome/treasury owner; friendly fire; window closure; restoration owner verified |
-| M7 — Living world | Prosperity/petitions, visitor and permanent companion | Metrics persist; governor replacement cannot reset neglect; death vs unload distinguished |
-| M8 — Seireitei cycle | Raid, extraction, faction recovery, daily city restore | Unauthorized entry denied; no duplicate loot; mid-reset restart and evacuation |
-| M9 — Expansion | Arrancar/evolution, Visored, capture and broader release roster | Each new family passes shared lifecycle and recovery tests; captured lease reconciles |
-| M10 — Release candidate | Pinned client/server pack with operator guide | Built jar tested in real instance; performance evidence; backup/restore and migration rehearsal |
+| Feature | Capability |
+|---|---|
+| F01 — Core Spiritual Gameplay | Baseline, identity, debug tooling, combat integration, starter paths, first Hollow, shared lifecycle, and integrated acceptance |
+| F02 — Shinigami Journey | Zanpakuto bond, sword spirit, releases, duties, and long-form progression |
+| F03 — Quincy Journey | Spirit weapons, techniques, forms, faction identity, and advanced progression |
+| F04 — Hollow, Arrancar, and Visored | Evolution, releases, masks, capture interactions, and alternate progression |
+| F05 — Bodies, Death, and Gigai | Body/spirit separation, death, inventory custody, gigai, and recovery |
+| F06 — Settlements and Living Society | Colonies, protectors, governance, prosperity, petitions, and persistent NPC society |
+| F07 — Realms and Travel | Soul Society, Hueco Mundo, Dangai, Inner Worlds, portals, admission, and recovery |
+| F08 — Guilds, War, and Destruction | Guild authority, conflict, objectives, economy, terrain damage, and restoration |
+| F09 — Seireitei Cycle | Sanctuary, training, infiltration, extraction, consequences, and city restoration |
+| F10 — Encounters, Quests, and Companions | Encounters, missions, bosses, rewards, followers, travel, and permanent death |
+| F11 — Presentation and Content | HUD, sensing, animation, effects, sound, accessibility, assets, and content expansion |
+| F12 — Operations and Release | Performance, configuration, compatibility, migration, backups, packaging, and operator guidance |
 
-Dependency checks occur before each affected milestone. Optional visual portal work can progress after basic travel, but does not block the combat demo. Add one content family at a time. A demo may simplify content and presentation; it must still reject forged damage and avoid duplicating persistent ownership.
+Only F01 is decomposed in the initial roadmap revision. Later features receive their own approved specifications and milestone sets as their dependencies approach readiness. Feature numbers are stable identities rather than a promise of strictly numeric execution; F11 and F12 accumulate work throughout development.
+
+Dependency checks occur before each affected milestone. Optional visual portal work can progress after basic F07 travel, but does not block the F01 combat demo. Add one content family at a time. A demo may simplify content and presentation; it must still reject forged damage and avoid duplicating persistent ownership.
 
 ## 20. Testing, observability and operations
 
@@ -316,15 +319,15 @@ Each milestone records exact jar/version configuration, test scenario, expected 
 
 The pinned production target is Minecraft 1.21.1 with NeoForge 21.1.252, Java 21 and Parchment 2024.11.17. The locally installed Minecraft 26.3 and 26.4 snapshot clients are not compatible test targets for this mod; use the repository's shared `run/` 1.21.1 development profile and dedicated disposable lab worlds so ordinary player worlds remain untouched.
 
-Create `MODLOG.md` at M0. For every material test, record the exact jar set, world/profile, command or scenario, expected and observed result, log location, screenshots when useful, failures and their resolved cause. This log is the source for future operator guidance and any field note; it must distinguish a development-run observation from a packaged-jar result.
+Create `MODLOG.md` at F01.M01. For every material test, record the exact jar set, world/profile, command or scenario, expected and observed result, log location, screenshots when useful, failures and their resolved cause. This log is the source for future operator guidance and any field note; it must distinguish a development-run observation from a packaged-jar result.
 
-Use GameTests for deterministic server-side rules, but retain real-client checks for assets, animation, HUD and portal rendering. `gameTestServer` initializes only the Overworld, so it cannot prove Inner World or other custom-dimension behavior. For M5 dimension, arena and travel checks, run the normal headless development server, invoke `/test runall` there (optionally through an access-controlled local RCON session), and verify the created target dimension and return path in the server log.
+Use GameTests for deterministic server-side rules, but retain real-client checks for assets, animation, HUD and portal rendering. `gameTestServer` initializes only the Overworld, so it cannot prove Inner World or other custom-dimension behavior. For F07 dimension, arena and travel checks, run the normal headless development server, invoke `/test runall` there (optionally through an access-controlled local RCON session), and verify the created target dimension and return path in the server log.
 
 Register an explicit network protocol version before the first custom payload. A client or server with a mismatched `bleachfracturedworld` jar must be refused during login with a clear version diagnostic rather than failing later during gameplay.
 
 Operator diagnostics should expose cast denials, active sessions, route tickets, arena allocations, raid phases and restoration status. Privileged repair commands must validate targets, log changes and reconcile through the same services. Log IDs/reasons without leaking credentials or private profile data. Rate-limit denial logs under abusive traffic.
 
-Development builds include a `BWF Debug` entry on Minecraft's pause screen. Its standalone client screen reads only synchronized snapshots and sends bounded action identifiers; it never submits a player UUID, replacement profile, damage value, or reward. The server resolves the connection's player, checks `DebugAccessPolicy`, performs the action through an ordinary gameplay service or an explicitly separated debug service, increments state revision for accepted mutations, logs the outcome, and returns an authoritative snapshot. M1 exposes profile inspection, normal path selection, profile reset, energy presets, and refresh. Development access starts enabled for the private test loop; release hardening must default it off and add operator/environment restrictions before public distribution.
+Development builds include a `BWF Debug` entry on Minecraft's pause screen. Its standalone client screen reads only synchronized snapshots and sends bounded action identifiers; it never submits a player UUID, replacement profile, damage value, or reward. The server resolves the connection's player, checks `DebugAccessPolicy`, performs the action through an ordinary gameplay service or an explicitly separated debug service, increments state revision for accepted mutations, logs the outcome, and returns an authoritative snapshot. F01.M02 exposes profile inspection, normal path selection, profile reset, energy presets, and refresh. Development access starts enabled for the private test loop; release hardening must default it off and add operator/environment restrictions before public distribution.
 
 Pack distribution uses pinned manifests and separate client/server lists. Do not build a custom launcher until a concrete distribution need justifies it. Saves, player data and local credentials are not managed pack artifacts and must never be overwritten by updates.
 
@@ -332,7 +335,7 @@ Pack distribution uses pinned manifests and separate client/server lists. Do not
 
 Use this document as the product/architecture baseline. The repository's `MODLOG.md` records verified facts, failed approaches, class/registry IDs, tests and the next concrete action. Research belongs under `docs/research/`; focused architecture decisions can be appended here or linked from it. Keep decompiled evidence outside the shipping repository.
 
-Normal `runClient` and `runServer` tasks use stable `run/client/` and `run/server/` process profiles so both may run simultaneously without contending over logs, worlds, or mutable configuration. `run/mods/` is the single canonical dependency collection; prerequisite Gradle `Sync` tasks mirror its complete jar set into each process profile before launch. Do not edit the generated profile-local mod mirrors or create `m1-client`, `m2-client`, milestone server directories, or other reduced gameplay profiles. Automated GameTests may use `run/gametest/` to protect gameplay worlds and logs, but that directory is test infrastructure rather than an alternate manual acceptance profile.
+Normal `runClient` and `runServer` tasks use stable `run/client/` and `run/server/` process profiles so both may run simultaneously without contending over logs, worlds, or mutable configuration. `run/mods/` is the single canonical dependency collection; prerequisite Gradle `Sync` tasks mirror its complete jar set into each process profile before launch. Do not edit the generated profile-local mod mirrors or create feature/milestone-specific client or server directories or other reduced gameplay profiles. Automated GameTests may use `run/gametest/` to protect gameplay worlds and logs, but that directory is test infrastructure rather than an alternate manual acceptance profile.
 
 At each session: read this baseline and the current log, inspect the actual code, state the smallest slice, implement it, verify it, and record the outcome. Universal Modder supplies recon, reverse engineering, asset, testing and documentation workflows. It does not grant permission to reuse proprietary BleachCraft assets or decompiled implementations. Reuse permitted tools with notices; implement the gameplay architecture originally.
 
@@ -343,19 +346,19 @@ Resolve these decisions at their milestone rather than inventing answers now:
 | Decision | Recommended starting policy | Gate |
 |---|---|---|
 | Combat and colony artifact versions | Pin one tested NeoForge 1.21.1 combination | Before dependency installation |
-| External guild and war authority | Choose one owner; map other records | Before M6 |
-| War restoration compatibility | Verify direct edits; single owner per operation | Before destructive M6 tests |
-| Guild composition | Single political guild; cross-faction alliances | Before M6 |
-| PvP loot and death loss | Limited objective loot first; explicit inventory policy | Before M6 |
+| External guild and war authority | Choose one owner; map other records | Before F08 |
+| War restoration compatibility | Verify direct edits; single owner per operation | Before destructive F08 tests |
+| Guild composition | Single political guild; cross-faction alliances | Before F08 |
+| PvP loot and death loss | Limited objective loot first; explicit inventory policy | Before F08 |
 | Rare release assignment/reassignment | Earned access with a reviewed rarity policy | Before broad roster expansion |
-| Gigai vulnerability and distance | Owned anchor, one canonical inventory | Before M4 |
-| Capture expiry and recovery | Temporary lease; no permanent mastery loss | Before M9 |
-| Daily city reset time | Configurable UTC schedule, announced locally | Before M8 |
-| Performance capacity | Measure the intended combat/colony workload | Before public release |
+| Gigai vulnerability and distance | Owned anchor, one canonical inventory | Before F05/F06 integration |
+| Capture expiry and recovery | Temporary lease; no permanent mastery loss | Before F04 capture mechanics |
+| Daily city reset time | Configurable UTC schedule, announced locally | Before F09 |
+| Performance capacity | Measure the intended combat/colony workload | Before F12 release acceptance |
 
 Risk note: the largest uncertainties are combined dependency compatibility and interactions between destruction, inventories and external restoration. Save schemas, ownership records and server admission rules need verification before expanding content.
 
-Next three development steps: repeat the M1 manual world checks with the combined dependency stack active; record and triage cross-mod diagnostics without reducing the stack; then begin M2 through a narrow Epic Fight combat adapter and its first Shinigami/Quincy mechanics.
+Next three development steps: complete the pending F01.M01 and F01.M02 user-run acceptance checks with the combined dependency stack; record and triage cross-mod diagnostics without reducing the stack; then specify F01.M03 around a narrow Epic Fight combat adapter and server-authoritative action contract.
 
 ## 22. Evidence and reference boundaries
 

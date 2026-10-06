@@ -1,5 +1,7 @@
 # M1 Spiritual Identity and Debug Console Implementation Plan
 
+> **Canonical identifier:** This historical M1 plan implements F01.M02 — Persistent spiritual identity and development console. It remains at its original path for stable links. Current status and gates live in the [roadmap](../../ROADMAP.md). All Git/commit steps below are historical instructions and must not be executed unless the user explicitly requests them.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Deliver a persistent, server-authoritative Shinigami/Quincy identity with synchronized spiritual energy, a HUD, and a pause-screen development console for repeatable testing.

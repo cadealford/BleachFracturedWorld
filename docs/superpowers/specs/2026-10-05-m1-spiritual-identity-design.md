@@ -1,5 +1,7 @@
 # M1 Spiritual Identity and Debug Console Design
 
+> **Canonical identifier:** This historical M1 specification defines F01.M02 — Persistent spiritual identity and development console. Current status and gates live in the [roadmap](../../ROADMAP.md); the taxonomy decision is recorded in the [feature roadmap design](2026-10-06-feature-roadmap-taxonomy-design.md).
+
 ## Goal
 
 Deliver the first playable spiritual identity loop: a player chooses Shinigami or Quincy once, retains that identity and a 100/100 spiritual-energy baseline through death, reconnect, and restart, and sees the authoritative energy value in-game. Provide an in-mod development console that makes this loop repeatable without giving the client authority over profile state.
@@ -75,8 +77,8 @@ The server logs actor UUID, action, accepted/rejected outcome, reason, and resul
 
 Add NeoForge GameTests for default profile creation, an accepted first selection, rejected repeat selection, debug reset, bounded energy presets, denied debug access, and snapshot dispatch. Tests must assert the exact path, energy, mastery, and expected revision behavior. Pure payload/action decoding tests may be ordinary unit tests when they do not require a running game.
 
-Run a dedicated development server for a manual persistence pass: open the debug console, choose a path, change energy, die and respawn, disconnect/reconnect, restart the server, then verify the same profile and HUD state. Use Reset Profile and confirm an ordinary second selection can be tested while direct duplicate selection still rejects. Run the packaged jar in a clean 1.21.1 NeoForge instance before accepting M1. Record the jar set, commands, logs, screenshots, and results in `MODLOG.md`.
+Run a dedicated development server for a manual persistence pass: open the debug console, choose a path, change energy, die and respawn, disconnect/reconnect, restart the server, then verify the same profile and HUD state. Use Reset Profile and confirm an ordinary second selection can be tested while direct duplicate selection still rejects. Record the jar set, commands, logs, screenshots, and results in `MODLOG.md`. Packaged-jar acceptance is consolidated under F01.M08.
 
 ## Non-goals and follow-up
 
-M2 owns energy consumption by gameplay, combat admission, swords, projectiles, and rewards. M3 owns mastery growth, forms, upkeep, cooldowns, and release progression. A graphical production path-selection screen can replace or supplement the command after M1's server contract is proven. Release-grade debug authorization and removal from ordinary player builds are required before public distribution, but do not block the private M1 development loop.
+F01.M03-F01.M06 own energy consumption by gameplay, combat admission, swords, projectiles, encounters, and rewards. F01.M07 owns the first shared mastery/form lifecycle, upkeep, cooldowns, and representative release progression; F02 and F03 own deeper path progression. A graphical production path-selection screen can replace or supplement the command after F01.M02's server contract is proven. Release-grade debug authorization and removal from ordinary player builds are required before public distribution, but do not block the private F01.M02 development loop.
