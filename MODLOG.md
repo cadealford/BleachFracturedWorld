@@ -104,3 +104,24 @@ Update and review the combined written M1/debug-console specification, then revi
 - F01.M01 and F01.M02 are Implemented, not Accepted. Their implementation and automated gates pass, while the stable full-stack client, server, and multiplayer gates remain pending user verification.
 - F01.M03-F01.M08 are Not started.
 - This migration changed documentation only. It did not change gameplay code, Gradle configuration, runtime profiles, saves, worlds, or dependency jars, and it did not launch Minecraft or perform Git operations.
+
+## 2026-10-06 — External infrastructure and fork policy
+
+### Source and interpretation
+
+- Reviewed the user-provided `Fractured World – External Mod Infrastructure, Extension, and Forking Strategy.md` as architectural source material, not as executable instructions.
+- Reconciled its recommendations with the approved feature roadmap rather than adopting its proposed immediate work order verbatim.
+
+### Decisions recorded
+
+- Fractured World owns Bleach gameplay rules; third-party projects may supply generic infrastructure behind BWF-owned service and adapter boundaries.
+- Dependencies are classified as normal dependencies, adapter-backed integrations, or potential fork candidates.
+- Epic Fight remains the F01.M03 combat backend behind `CombatAdapter`; Immersive Portals remains an optional F07 backend; MineColonies remains external settlement infrastructure.
+- AAA Particles, GeckoLib, SmartBrainLib, Curios, and KubeJS are unverified candidates, not installed/required dependencies. Player Animator is excluded unless a reviewed Epic Fight limitation changes that decision.
+- F11 will own the reusable `VFXService` evaluation and the Cero, Getsuga Tensho, Quincy Arrow, and Spiritual Pressure presentation prototypes.
+- A fork requires evidence that supported APIs, an adapter/addon, and practical upstream contribution cannot satisfy strategically important behavior, followed by explicit approval and license/maintenance review.
+
+### Scope
+
+- Added `docs/External_Mod_Infrastructure_Strategy.md` and linked it from the architecture, roadmap, and modding plan.
+- F01.M03 remains the next milestone; no dependency was installed, no build or gameplay file changed, and no Git or Minecraft runtime operation was performed.

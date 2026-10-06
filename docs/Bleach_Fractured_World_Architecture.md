@@ -42,7 +42,7 @@ Assumptions: Java Edition, a privately operated multiplayer server, placeholder 
 
 ## 3. Architecture choice
 
-Use one modular NeoForge mod, with plain Java services for gameplay rules and narrow adapters for external mods. Grow packages when their feature is implemented; do not scaffold every future subsystem now.
+Use one modular NeoForge mod, with plain Java services for gameplay rules and narrow adapters for external mods. Grow packages when their feature is implemented; do not scaffold every future subsystem now. Fractured World owns Bleach gameplay semantics; mature external projects may supply generic Minecraft infrastructure when their supported APIs, compatibility, licensing, and maintenance profile are acceptable.
 
 | Approach | Tradeoff | Decision |
 |---|---|---|
@@ -70,7 +70,7 @@ debug/        development-only inspection, controlled mutations, access policy
 integration/  external combat, colony, war, portal, VFX adapters
 ```
 
-Dependencies flow inward: external adapters translate into our domain contracts. Ability handlers call shared combat, relation, and world policies rather than external-mod internals. Common/server classes never depend on client render classes. Prefer public APIs and events; isolate any unavoidable mixin and document its exact version dependency.
+Dependencies flow inward: external adapters translate into our domain contracts. Ability handlers call shared combat, relation, world, VFX, portal, AI, animation, settlement, and equipment services rather than external-mod internals. Common/server classes never depend on client render classes. Prefer public APIs and events; isolate any unavoidable mixin and document its exact version dependency.
 
 ## 4. Dependency responsibilities
 
@@ -81,13 +81,27 @@ The modpack supplies existing foundations; our mod supplies Bleach rules and con
 | Epic Fight | Animated melee, stamina, guard, dodge, combat timing | `CombatAdapter`: action state, weapon style, animation and hit integration |
 | MineColonies | Colony records, citizens, workers, construction, production, guards | `ColonyAdapter`: stable colony key, permissions, metrics and supported mutations |
 | War 'N Taxes | Existing economy, war and siege machinery where compatible | `WarAdapter`: lifecycle, eligibility, treasury and outcome events |
-| Immersive Portals candidate | Visible cross-realm openings and optional spatial effects | `PortalBackend`: rendering and traversal callbacks for mod-owned routes |
+| Immersive Portals | Visible cross-realm openings and optional spatial effects | `PortalBackend`: rendering and traversal callbacks for mod-owned routes |
 | Weapons of Miracles, Nightfall, Sword Soaring candidates | Additional styles, animation or flying-weapon inspiration/integration | Optional content adapters after exact-version and license checks |
-| Animation/VFX libraries | Models, trails, emitters, sound and presentation | Optional client adapters; never damage authority |
+| Animation/VFX libraries | Models, trails, emitters, sound and presentation | `AnimationService` and `VFXService`; never damage authority |
 
 Choose and pin exact artifacts with loader, Minecraft version, required transitive dependencies, source URL, hash, and client/server placement. Routine development launches the complete pinned stack together from the shared `run/mods/` directory so cross-mod regressions surface during every milestone. A dependency may be isolated temporarily only to diagnose a demonstrated failure; the acceptance environment is always the combined stack. Do not silently change the base game version to accommodate an optional add-on. Compatible APIs, permissions, and redistribution terms must be checked before copying code or assets.
 
 Each adapter reports its capabilities. If an essential hook is absent, disable that integrated feature with a clear diagnostic in the shared development profile. A missing visual backend can use vanilla particles or ordinary teleportation; a missing authorization hook must not silently permit a siege.
+
+### External infrastructure governance
+
+The canonical [external mod infrastructure strategy](External_Mod_Infrastructure_Strategy.md) classifies integrations as:
+
+| Category | Policy |
+|---|---|
+| A — Normal dependency | Use supported APIs and avoid forks except for an extraordinary separately approved reason |
+| B — Extension/adapter | Keep a substantial BWF-owned boundary between gameplay and the dependency |
+| C — Potential fork | Start with dependency/adapter use; investigate a fork only after representative prototypes prove repeated blocking limitations |
+
+Installed dependencies and unverified candidates must remain visibly distinct. Epic Fight and Immersive Portals are Category B integrations; MineColonies is Category A. AAA Particles, GeckoLib, SmartBrainLib, Curios, and KubeJS are candidates rather than current requirements. Player Animator is excluded from the required stack unless a reviewed Epic Fight limitation justifies reconsideration.
+
+Fork evaluation follows a strict ladder: supported API, BWF adapter/addon, practical upstream contribution, then strategic fork analysis. A fork requires explicit approval plus license, asset, attribution, distribution, migration, compatibility, and maintenance review. AAA Particles is the first candidate only after the four-effect F11 experiment; Immersive Portals is a possible later candidate; Epic Fight is last resort. MineColonies, GeckoLib, SmartBrainLib, Curios, and KubeJS are not current fork candidates.
 
 ## 5. State ownership and persistence
 
@@ -281,6 +295,10 @@ HUD priorities are health, Epic Fight stamina, spiritual energy, form drain, abi
 Spiritual sensing reveals coarse, permission-appropriate information governed by range, power, concealment and line/realm policy. Clients receive authorized detections, not every hidden player's exact coordinates. Spiritual pressure communicates danger with audiovisual cues; extreme power does not automatically become unrestricted crowd control.
 
 Use vanilla placeholders first, then original/licensed models, sprites, animations, audio and particles. Maintain source files, attribution and generation provenance. Universal Modder's asset and testing skills are development guidance; their presence does not prove `um`, fal authentication, Blender or ffmpeg is installed. Asset tools are not runtime dependencies of the mod.
+
+Presentation code uses a BWF-owned `VFXService` with reusable projectile, beam, burst, aura, trail, area, transformation, and environmental effect families. A vanilla implementation is the fallback. AAA Particles may become an F11 backend only after Minecraft/NeoForge compatibility, licensing, redistribution terms, performance, and full-stack behavior are verified. Gameplay code never calls that backend directly.
+
+The first VFX infrastructure experiment covers presentation prototypes for Cero, Getsuga Tensho, Quincy Arrow, and Spiritual Pressure. Together they exercise charging/beam/impact, moving slash geometry, fast repeated projectile trails, and persistent player-attached auras. These prototypes validate reusable rendering infrastructure; they do not move damage, energy, progression, or unlock authority out of the owning gameplay features. Fork consideration occurs only after the adapter's limitations are recorded across this representative set.
 
 Presentation uses cast IDs and phase cues. Emitters and loops clean up on completion, interruption, despawn, travel and disconnect. Cap density and distance; provide reduced-effects and shader-compatible fallbacks. Never make a cinematic or particle library responsible for deciding whether an attack landed.
 

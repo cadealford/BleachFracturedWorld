@@ -52,10 +52,12 @@ Every normal acceptance pass uses the full dependency collection from `run/mods/
 | F08 | Guilds, War, and Destruction | Guild authority, relations, war windows, objectives, economy integration, bounded terrain damage, and restoration ownership | F01 and F06 |
 | F09 | Seireitei Cycle | Sanctuary, training, authorized infiltration, objective extraction, faction consequences, and resumable city restoration | F07 and F08 |
 | F10 | Encounters, Quests, and Companions | Encounter direction, missions, bosses, contribution rewards, followers, travel reconciliation, and permanent-death handling | F01; integrates with F06 and F07 |
-| F11 | Presentation and Content | HUD evolution, spiritual sensing, animation, effects, sound, accessibility, asset provenance, and content expansion | Advances alongside F01-F10 |
+| F11 | Presentation and Content | HUD evolution, spiritual sensing, reusable VFX/animation services, effects, sound, accessibility, asset provenance, infrastructure evaluation, and content expansion | Advances alongside F01-F10 |
 | F12 | Operations and Release | Performance budgets, configuration, compatibility, migration, backup/restore, packaging, and operator guidance | Advances alongside all features; closes the release |
 
 Feature numbers express stable identity, not an inflexible execution order. Dependency readiness and milestone acceptance determine what can safely begin. F11 and F12 accumulate work and evidence across the project.
+
+The [external mod infrastructure strategy](External_Mod_Infrastructure_Strategy.md) governs dependency, adapter, and fork decisions. Candidate libraries do not become roadmap dependencies merely by appearing in that strategy. F11 will eventually decompose an AAA Particles compatibility check, `VFXService` plus vanilla fallback, four representative effect prototypes, and an evidence-based adapter-versus-fork decision. This does not displace F01.M03 as the next implementation milestone.
 
 ## Current status
 
