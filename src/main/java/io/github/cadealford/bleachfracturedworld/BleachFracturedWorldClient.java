@@ -1,31 +1,25 @@
 package io.github.cadealford.bleachfracturedworld;
 
-import net.minecraft.client.Minecraft;
+import io.github.cadealford.bleachfracturedworld.client.ClientProfileCache;
+import io.github.cadealford.bleachfracturedworld.client.SpiritualEnergyHud;
+import io.github.cadealford.bleachfracturedworld.client.debug.ClientDebugState;
+import io.github.cadealford.bleachfracturedworld.client.debug.PauseScreenDebugButton;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.gui.ConfigurationScreen;
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
-// This class will not load on dedicated servers. Accessing client side code from here is safe.
 @Mod(value = BleachFracturedWorld.MODID, dist = Dist.CLIENT)
-// You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
-@EventBusSubscriber(modid = BleachFracturedWorld.MODID, value = Dist.CLIENT)
 public class BleachFracturedWorldClient {
-    public BleachFracturedWorldClient(ModContainer container) {
-        // Allows NeoForge to create a config screen for this mod's configs.
-        // The config screen is accessed by going to the Mods screen > clicking on your mod > clicking on config.
-        // Do not forget to add translations for your config options to the en_us.json file.
-        container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+    public BleachFracturedWorldClient(IEventBus modEventBus) {
+        modEventBus.addListener(SpiritualEnergyHud::register);
+        NeoForge.EVENT_BUS.addListener(BleachFracturedWorldClient::onLogout);
+        NeoForge.EVENT_BUS.addListener(PauseScreenDebugButton::onScreenInit);
     }
 
-    @SubscribeEvent
-    static void onClientSetup(FMLClientSetupEvent event) {
-        // Some client setup code
-        BleachFracturedWorld.LOGGER.info("HELLO FROM CLIENT SETUP");
-        BleachFracturedWorld.LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+    private static void onLogout(ClientPlayerNetworkEvent.LoggingOut event) {
+        ClientProfileCache.clear();
+        ClientDebugState.clear();
     }
 }

@@ -1,13 +1,15 @@
 {
-  "itemGroup.bleachfracturedworld": "Example Mod Tab",
-  "block.bleachfracturedworld.example_block": "Example Block",
-  "item.bleachfracturedworld.example_item": "Example Item",
-
-  "bleachfracturedworld.configuration.title": "Example Mod Configs",
-  "bleachfracturedworld.configuration.section.bleachfracturedworld.common.toml": "Example Mod Configs",
-  "bleachfracturedworld.configuration.section.bleachfracturedworld.common.toml.title": "Example Mod Configs",
-  "bleachfracturedworld.configuration.items": "Item List",
-  "bleachfracturedworld.configuration.logDirtBlock": "Log Dirt Block",
-  "bleachfracturedworld.configuration.magicNumberIntroduction": "Magic Number Text",
-  "bleachfracturedworld.configuration.magicNumber": "Magic Number"
+  "command.bleachfracturedworld.choose.accepted": "Spiritual path chosen: %s",
+  "command.bleachfracturedworld.choose.invalid": "That spiritual path cannot be selected.",
+  "command.bleachfracturedworld.choose.already_chosen": "Your spiritual path is already %s.",
+  "command.bleachfracturedworld.choose.revision_exhausted": "Your profile can no longer be changed safely.",
+  "screen.bleachfracturedworld.debug.title": "BWF Development Console",
+  "screen.bleachfracturedworld.debug.open": "BWF Debug",
+  "screen.bleachfracturedworld.debug.choose_shinigami": "Choose Shinigami",
+  "screen.bleachfracturedworld.debug.choose_quincy": "Choose Quincy",
+  "screen.bleachfracturedworld.debug.reset": "Reset Profile",
+  "screen.bleachfracturedworld.debug.energy_zero": "Energy: 0",
+  "screen.bleachfracturedworld.debug.energy_half": "Energy: Half",
+  "screen.bleachfracturedworld.debug.energy_full": "Energy: Full",
+  "screen.bleachfracturedworld.debug.refresh": "Refresh"
 }

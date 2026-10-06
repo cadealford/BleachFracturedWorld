@@ -34,6 +34,24 @@ base {
     archivesName = mod_id
 }
 
+// Keep one canonical development mod collection while giving simultaneously
+// running clients and servers independent worlds, logs, and configuration.
+def sharedDevelopmentMods = layout.projectDirectory.dir('run/mods')
+def syncClientDevelopmentMods = tasks.register('syncClientDevelopmentMods', Sync) {
+    group = 'bwf development'
+    description = 'Mirrors the shared development mod stack into the client runtime profile.'
+    from(sharedDevelopmentMods)
+    include('*.jar')
+    into(layout.projectDirectory.dir('run/client/mods'))
+}
+def syncServerDevelopmentMods = tasks.register('syncServerDevelopmentMods', Sync) {
+    group = 'bwf development'
+    description = 'Mirrors the shared development mod stack into the server runtime profile.'
+    from(sharedDevelopmentMods)
+    include('*.jar')
+    into(layout.projectDirectory.dir('run/server/mods'))
+}
+
 // Mojang ships Java 21 to end users in 1.21.1, so mods should target Java 21.
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
@@ -54,12 +72,15 @@ neoForge {
     runs {
         client {
             client()
+            // Stable process profile; dependencies are mirrored from run/mods.
+            gameDirectory = project.file('run/client')
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
         server {
             server()
+            gameDirectory = project.file('run/server')
             programArgument '--nogui'
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
@@ -69,6 +90,9 @@ neoForge {
         // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
             type = "gameTestServer"
+            // Automated GameTests get a disposable world/log directory; this is
+            // not a separate gameplay profile.
+            gameDirectory = project.file('run/gametest')
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
@@ -105,6 +129,14 @@ neoForge {
             sourceSet(sourceSets.main)
         }
     }
+}
+
+tasks.named('runClient').configure {
+    dependsOn(syncClientDevelopmentMods)
+}
+
+tasks.named('runServer').configure {
+    dependsOn(syncServerDevelopmentMods)
 }
 
 // Sets up a dependency configuration called 'localRuntime'.

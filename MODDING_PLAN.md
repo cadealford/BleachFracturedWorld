@@ -2,18 +2,20 @@
 
 Updated October 6, 2026.
 
-- Development install: `/mnt/c/Users/squid/Software dev/BleachFracturedWorld` with a generated game directory at `run/`.
+- Development install: `/mnt/c/Users/squid/Software dev/BleachFracturedWorld`; normal runtime profiles are `run/client/` and `run/server/`.
 - Target: Minecraft Java Edition 1.21.1, NeoForge 21.1.252, ModDevGradle 2.0.148, Parchment 2024.11.17.
 - Runtime: managed Java, 64-bit; Gradle uses an auto-provisioned Eclipse Temurin JDK 21 toolchain.
 - Anti-cheat / online: no anti-cheat is part of the development route. Development and verification are limited to local/offline worlds and privately controlled servers. Do not use the mod on protected public servers.
 - Saves: `run/saves/` or the dedicated lab world's configured directory.
-- Config: `run/config/`.
-- Logs: `run/logs/latest.log` and the dedicated server's log directory.
+- Config: process-local configuration under `run/client/config/` and `run/server/config/`.
+- Mods: `run/mods/`. This is the single authoritative development dependency stack for normal client and server launches.
+- Logs: `run/client/logs/latest.log` and `run/server/logs/latest.log`; automated GameTests use `run/gametest/logs/`.
 - Community route: the official NeoForge mod API and ModDevGradle workspace. Relevant official references are [getting started](https://docs.neoforged.net/docs/1.21.1/gettingstarted/), [data attachments](https://docs.neoforged.net/docs/1.21.1/datastorage/attachments/), [networking](https://docs.neoforged.net/docs/1.21.1/networking/), and [screens](https://docs.neoforged.net/docs/1.21.1/gui/screens/).
 - Chosen route: extend the existing NeoForge mod through public loader APIs. M1 uses a persisted player attachment, directional payloads, server event/command handlers, client HUD/screen hooks, and NeoForge GameTests.
-- Lab plan: use a fresh 1.21.1 world and separate development profile; back up any existing save before schema or gameplay testing; never test against an ordinary player world. A client launch or automated input session requires explicit user approval.
+- Lab plan: use the stable client/server profiles with the complete mirrored mod stack active. Create disposable worlds under `run/client/saves/` or `run/server/world/` and back them up before schema or destructive gameplay testing; never use an ordinary player world. The user exclusively performs client/server launches and game input.
 - Current vertical slice: persisted Shinigami/Quincy identity, synchronized spiritual energy, and a server-authoritative development console accessible from the pause screen.
 - Verification gate: GameTests and build first, then dedicated-server persistence, then an approved manual client pass, then a packaged-jar pass in a clean 1.21.1 NeoForge instance.
 - Toolkit note: the Universal Modder `um` executable is not currently on `PATH`, so its shared knowledge-base search and backup command were unavailable during this recon. No loader installation or game-folder mutation was performed.
-- Unknowns to resolve before M1 acceptance: exact clean lab profile path, packaged-jar client/server pair, final release debug-access policy, and whether the existing third-party development mod set should be excluded from the M1 acceptance profile.
+- Normal development rule: milestones must not create milestone-specific profiles. `run/mods/` is the single canonical dependency collection; Gradle mirrors all jars into stable `run/client/mods/` and `run/server/mods/` before their respective launch tasks. This permits simultaneous client/server testing without sharing worlds, logs, or mutable configuration.
+- Unknowns to resolve before release: packaged-jar client/server pair and the final release debug-access policy.
 

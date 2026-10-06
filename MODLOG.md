@@ -43,3 +43,42 @@
 ### Next step
 
 Update and review the combined written M1/debug-console specification, then revise the implementation plan and execute it test-first.
+
+## 2026-10-06 — Restore the contiguous dependency profile
+
+### Finding
+
+- M1 temporarily routed `runClient` to `run/m1-client` and `runServer` to `run/m1-server`.
+- The authoritative dependency stack remained in `run/mods/`, so the M1 client loaded only Bleach Fractured World, Minecraft, and NeoForge.
+- The prior shared-profile log at `run/logs/latest.log` proves the combined stack loaded Epic Fight 21.17.3.1, Epic Fight - Invincible 21.15.8.2, Weapons of Miracles 2.0.178, MineColonies 1.1.1403, WarNTaxes 5.0.9, Immersive Portals 6.0.7, and their supporting mods together.
+
+### Decision
+
+- All normal client and server development uses the shared `run/` profile and complete `run/mods/` stack across every milestone.
+- Milestone-specific gameplay profiles are prohibited because they conceal cross-mod compatibility failures.
+- `run/gametest/` remains isolated only for disposable automated GameTest worlds and logs; it is not a manual gameplay or acceptance profile.
+- Existing mods, configurations, saves, and worlds remain in place. No files are moved or deleted.
+
+### Verification
+
+- Shared-profile routing check passed: normal client and server use `run/`; GameTest uses `run/gametest/`.
+- `./gradlew build --project-cache-dir /tmp/bwf-gradle-project-cache --no-daemon`: `BUILD SUCCESSFUL` in 31 seconds.
+- `./gradlew runGameTestServer --project-cache-dir /tmp/bwf-gradle-project-cache --no-daemon`: all 23 required tests passed and the test server shut down cleanly.
+- `gradlew.bat runClient --no-daemon`: Windows client resolved `GAMEDIR` to `run`, `MODSDIR` to `run/mods`, loaded the 18-entry combined mod list, completed resource reload, initialized Epic Fight, and started the sound engine without a fatal startup error.
+- The combined stack emits existing third-party missing-icon, missing-subtitle/sound, and optional WaveyCapes-layer diagnostics. These did not stop startup and are retained as compatibility observations for later triage.
+- Two byte-identical MineColonies jars are present in `run/mods/` (`minecolonies-1.1.1403-1.21.1.jar` and the `(1)` copy), both SHA-256 `c8d4373ffc8a76638c8edf2bb6716f9209599032209c48d0d559b787f69a0561`. NeoForge selected one copy during this launch. Neither file was removed because dependency-folder cleanup requires an explicit user request.
+
+## 2026-10-06 — Stable simultaneous client/server profiles
+
+### Finding
+
+- Sharing one game directory exposed client/server log and mutable-file contention during simultaneous testing.
+- A server launch at 02:01 failed only because port 25565 was already owned by stale WSL Java PID 24513. Every dependency completed discovery and loading before the bind failure; the later shutdown exception was secondary to incomplete server initialization.
+
+### Decision
+
+- Keep `run/mods/` as the single canonical dependency collection.
+- Use stable, non-milestone `run/client/` and `run/server/` process profiles.
+- `syncClientDevelopmentMods` and `syncServerDevelopmentMods` mirror every canonical jar into the corresponding generated profile before launch.
+- The profiles keep separate logs, worlds, saves, and mutable configuration and may therefore run simultaneously.
+- The user exclusively performs all client/server launches, process management, and in-game testing. Agent verification is limited to code/configuration inspection, compilation, and non-game unit tests.

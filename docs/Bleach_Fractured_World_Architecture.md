@@ -36,7 +36,7 @@ Read-only inspection of the actual repository at `C:/Users/squid/Software dev/Bl
 | Mod version | 0.1.0 |
 | Current license setting | All Rights Reserved; preserve until deliberately changed |
 
-The renamed entry points exist, but the code inspected still contains template content. The inspected build dependency block does not yet declare the planned gameplay mods. A prior user report confirms the starter development client entered a world; this design pass did not build or launch it or prove dedicated-server operation.
+The repository began from renamed NeoForge template entry points. M1 has since replaced the template gameplay surface with the spiritual-profile vertical slice. External gameplay mods are supplied by the shared development stack in `run/mods/` rather than Gradle compile dependencies; the October 6, 2026 combined-client verification loaded the full stack alongside the development sources.
 
 Assumptions: Java Edition, a privately operated multiplayer server, placeholder assets for early slices, and one primary custom mod. Exact balance numbers, rare-release distribution, progression rates, and public-server capacity remain tuning decisions. Proposed defaults below are recommendations, not previously approved numerical rules.
 
@@ -85,9 +85,9 @@ The modpack supplies existing foundations; our mod supplies Bleach rules and con
 | Weapons of Miracles, Nightfall, Sword Soaring candidates | Additional styles, animation or flying-weapon inspiration/integration | Optional content adapters after exact-version and license checks |
 | Animation/VFX libraries | Models, trails, emitters, sound and presentation | Optional client adapters; never damage authority |
 
-Choose and pin exact artifacts with loader, Minecraft version, required transitive dependencies, source URL, hash, and client/server placement. Add one dependency at a time and verify startup, dedicated server, combat, and reconnect. Do not silently change the base game version to accommodate an optional add-on. Compatible APIs, permissions, and redistribution terms must be checked before copying code or assets.
+Choose and pin exact artifacts with loader, Minecraft version, required transitive dependencies, source URL, hash, and client/server placement. Routine development launches the complete pinned stack together from the shared `run/mods/` directory so cross-mod regressions surface during every milestone. A dependency may be isolated temporarily only to diagnose a demonstrated failure; the acceptance environment is always the combined stack. Do not silently change the base game version to accommodate an optional add-on. Compatible APIs, permissions, and redistribution terms must be checked before copying code or assets.
 
-Each adapter reports its capabilities. If an essential hook is absent, disable that integrated feature with a clear diagnostic or keep it in a separate test profile. A missing visual backend can use vanilla particles or ordinary teleportation; a missing authorization hook must not silently permit a siege.
+Each adapter reports its capabilities. If an essential hook is absent, disable that integrated feature with a clear diagnostic in the shared development profile. A missing visual backend can use vanilla particles or ordinary teleportation; a missing authorization hook must not silently permit a siege.
 
 ## 5. State ownership and persistence
 
@@ -314,7 +314,7 @@ Each milestone records exact jar/version configuration, test scenario, expected 
 
 ### NeoForge development lab rules
 
-The pinned production target is Minecraft 1.21.1 with NeoForge 21.1.252, Java 21 and Parchment 2024.11.17. The locally installed Minecraft 26.3 and 26.4 snapshot clients are not compatible test targets for this mod; use a separate 1.21.1 NeoForge profile and dedicated lab worlds so ordinary player worlds remain untouched.
+The pinned production target is Minecraft 1.21.1 with NeoForge 21.1.252, Java 21 and Parchment 2024.11.17. The locally installed Minecraft 26.3 and 26.4 snapshot clients are not compatible test targets for this mod; use the repository's shared `run/` 1.21.1 development profile and dedicated disposable lab worlds so ordinary player worlds remain untouched.
 
 Create `MODLOG.md` at M0. For every material test, record the exact jar set, world/profile, command or scenario, expected and observed result, log location, screenshots when useful, failures and their resolved cause. This log is the source for future operator guidance and any field note; it must distinguish a development-run observation from a packaged-jar result.
 
@@ -331,6 +331,8 @@ Pack distribution uses pinned manifests and separate client/server lists. Do not
 ## 21. Persistent development workflow and pending decisions
 
 Use this document as the product/architecture baseline. The repository's `MODLOG.md` records verified facts, failed approaches, class/registry IDs, tests and the next concrete action. Research belongs under `docs/research/`; focused architecture decisions can be appended here or linked from it. Keep decompiled evidence outside the shipping repository.
+
+Normal `runClient` and `runServer` tasks use stable `run/client/` and `run/server/` process profiles so both may run simultaneously without contending over logs, worlds, or mutable configuration. `run/mods/` is the single canonical dependency collection; prerequisite Gradle `Sync` tasks mirror its complete jar set into each process profile before launch. Do not edit the generated profile-local mod mirrors or create `m1-client`, `m2-client`, milestone server directories, or other reduced gameplay profiles. Automated GameTests may use `run/gametest/` to protect gameplay worlds and logs, but that directory is test infrastructure rather than an alternate manual acceptance profile.
 
 At each session: read this baseline and the current log, inspect the actual code, state the smallest slice, implement it, verify it, and record the outcome. Universal Modder supplies recon, reverse engineering, asset, testing and documentation workflows. It does not grant permission to reuse proprietary BleachCraft assets or decompiled implementations. Reuse permitted tools with notices; implement the gameplay architecture originally.
 
@@ -353,7 +355,7 @@ Resolve these decisions at their milestone rather than inventing answers now:
 
 Risk note: the largest uncertainties are combined dependency compatibility and interactions between destruction, inventories and external restoration. Save schemas, ownership records and server admission rules need verification before expanding content.
 
-Next three development steps: verify the current dedicated-server baseline; select and test the minimum combat dependency stack; implement one persisted spiritual profile with authoritative synchronization and death/reconnect behavior. M2 follows immediately after that foundation.
+Next three development steps: repeat the M1 manual world checks with the combined dependency stack active; record and triage cross-mod diagnostics without reducing the stack; then begin M2 through a narrow Epic Fight combat adapter and its first Shinigami/Quincy mechanics.
 
 ## 22. Evidence and reference boundaries
 

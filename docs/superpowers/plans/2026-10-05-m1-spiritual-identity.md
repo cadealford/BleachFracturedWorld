@@ -10,6 +10,8 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-05-m1-spiritual-identity-design.md`
 
+> **Superseding development-profile rule (revised October 6, 2026):** Normal client and server tasks use stable `run/client/` and `run/server/` process profiles. Both receive the complete canonical `run/mods/` stack through prerequisite Gradle sync tasks. Milestone-specific gameplay directories are prohibited. Only the automated GameTest world/log directory is otherwise isolated. The user performs all Git operations; do not execute any commit step in this historical plan unless explicitly requested.
+
 ## Global Constraints
 
 - Target exactly Minecraft 1.21.1, NeoForge 21.1.252, Java 21, and Parchment 2024.11.17.
@@ -83,7 +85,7 @@
 
 - [ ] **Step 1: Add deterministic test scaffolding**
 
-Force LF for `gradlew` in `.gitattributes`, ignore `run-m1-client/`, `run-m1-server/`, and `run-m1-gametest/`, configure those as separate run directories, set `gameTestServer.setForceExit false`, and add a gzipped 1×1×1 empty structure named `bleachfracturedworld:empty`. Annotate the test class with `@GameTestHolder(MODID)` and `@PrefixGameTestTemplate(false)`.
+Force LF for `gradlew` in `.gitattributes`, configure stable client/server process profiles with a canonical `run/mods/` mirror, keep GameTest world/log output under `run/gametest/`, set `gameTestServer.setForceExit false`, and add a gzipped 1×1×1 empty structure named `bleachfracturedworld:empty`. Annotate the test class with `@GameTestHolder(MODID)` and `@PrefixGameTestTemplate(false)`.
 
 - [ ] **Step 2: Write failing GameTests for profile invariants and attachment defaults**
 
@@ -326,7 +328,7 @@ Expected: every GameTest passes from a clean build; build exits 0; generated jar
 
 - [ ] **Step 2: Run a headless dedicated-server class-loading check**
 
-Start `./gradlew runServer` in `run-m1-server`, wait for `Done`, issue `stop` through the server console, and inspect the log. If the clean directory requires EULA acceptance, stop and request it rather than accepting on the user's behalf.
+The user starts `runServer` in the stable `run/server/` profile with the complete mirrored dependency stack, waits for `Done`, issues `stop` through the server console, and inspects the log. If EULA acceptance is required, the user decides whether to accept it.
 
 Expected: server starts and stops cleanly with no client-class loading error from `bleachfracturedworld`.
 
@@ -336,11 +338,11 @@ Record commands, versions, artifact hash, test counts, log paths, warnings, and 
 
 - [ ] **Step 4: Perform the manual client scenario only after explicit permission**
 
-Use the isolated `run-m1-client` profile with a fresh backed-up 1.21.1 lab world. Verify pause-screen entry, both ordinary and debug selection paths, duplicate rejection, reset, energy presets, HUD, death/respawn, reconnect, restart, packaged-jar operation, and a clear rejection for a deliberately mismatched protocol jar. Do not automate input before permission.
+The user uses the stable `run/client/` profile and its complete mirrored dependency stack with a fresh backed-up 1.21.1 lab world. Verify pause-screen entry, both ordinary and debug selection paths, duplicate rejection, reset, energy presets, HUD, death/respawn, reconnect, restart, packaged-jar operation, and a clear rejection for a deliberately mismatched protocol jar. The agent does not launch or control the game.
 
 - [ ] **Step 5: Update milestone status from observed evidence**
 
-If every M1 acceptance check passes, mark M1 accepted in the architecture table and record the clean profile/jar. Otherwise leave it implemented-but-unaccepted and list each missing or failed check.
+If every M1 acceptance check passes with the complete shared dependency stack active, mark M1 accepted in the architecture table and record the combined profile/jar. Otherwise leave it implemented-but-unaccepted and list each missing or failed check.
 
 - [ ] **Step 6: Commit**
 
