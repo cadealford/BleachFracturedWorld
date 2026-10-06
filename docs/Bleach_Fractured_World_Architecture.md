@@ -66,6 +66,7 @@ world/        realms, travel, arenas, encounters, restoration
 companion/    recruitment, ownership, orders, recovery
 network/      bounded requests and authoritative updates
 client/       input, screens, HUD, animations, visual cues
+debug/        development-only inspection, controlled mutations, access policy
 integration/  external combat, colony, war, portal, VFX adapters
 ```
 
@@ -290,7 +291,7 @@ Preserve the broad game while implementing complete slices. These gates replace 
 | Milestone | Playable result | Required evidence |
 |---|---|---|
 | M0 — Baseline | Renamed mod on pinned toolchain | Build; client world; dedicated server; two clients connect; no client-class load on server |
-| M1 — Spiritual identity | Choose Shinigami/Quincy; save profile and show energy | Death, reconnect and restart preserve durable state; invalid requests rejected |
+| M1 — Spiritual identity | Choose Shinigami/Quincy; save profile, show energy, and inspect/reset it through the development console | Death, reconnect and restart preserve durable state; invalid requests rejected; debug actions remain server-authoritative |
 | M2 — Combat loop | Bound sword, Quincy projectile, movement, one Hollow, rewards | Server hit authority; one reward per encounter; repeat-hit and energy checks |
 | M3 — Release loop | Spirit/trial, one Shikai/Bankai, one Quincy form | Shared admission, upkeep, interruption, modifiers and persistent cooldown verified |
 | M4 — Settlement loop | One colony, gigai, protector contract and guard interaction | External permissions respected; no copied body inventory; contract reward once |
@@ -323,15 +324,17 @@ Register an explicit network protocol version before the first custom payload. A
 
 Operator diagnostics should expose cast denials, active sessions, route tickets, arena allocations, raid phases and restoration status. Privileged repair commands must validate targets, log changes and reconcile through the same services. Log IDs/reasons without leaking credentials or private profile data. Rate-limit denial logs under abusive traffic.
 
+Development builds include a `BWF Debug` entry on Minecraft's pause screen. Its standalone client screen reads only synchronized snapshots and sends bounded action identifiers; it never submits a player UUID, replacement profile, damage value, or reward. The server resolves the connection's player, checks `DebugAccessPolicy`, performs the action through an ordinary gameplay service or an explicitly separated debug service, increments state revision for accepted mutations, logs the outcome, and returns an authoritative snapshot. M1 exposes profile inspection, normal path selection, profile reset, energy presets, and refresh. Development access starts enabled for the private test loop; release hardening must default it off and add operator/environment restrictions before public distribution.
+
 Pack distribution uses pinned manifests and separate client/server lists. Do not build a custom launcher until a concrete distribution need justifies it. Saves, player data and local credentials are not managed pack artifacts and must never be overwritten by updates.
 
 ## 21. Persistent development workflow and pending decisions
 
-Use this document as the product/architecture baseline. In the real repository, a future `MODLOG.md` records verified facts, failed approaches, class/registry IDs, tests and the next concrete action. Research belongs under `docs/research/`; focused architecture decisions can be appended here or linked from it. Keep decompiled evidence outside the shipping repository.
+Use this document as the product/architecture baseline. The repository's `MODLOG.md` records verified facts, failed approaches, class/registry IDs, tests and the next concrete action. Research belongs under `docs/research/`; focused architecture decisions can be appended here or linked from it. Keep decompiled evidence outside the shipping repository.
 
 At each session: read this baseline and the current log, inspect the actual code, state the smallest slice, implement it, verify it, and record the outcome. Universal Modder supplies recon, reverse engineering, asset, testing and documentation workflows. It does not grant permission to reuse proprietary BleachCraft assets or decompiled implementations. Reuse permitted tools with notices; implement the gameplay architecture originally.
 
-The PC and laptop share code and documents through Git; generated files, local worlds and credentials remain machine-local. Commit/push/pull operations follow the user's project instructions. This design pass creates no gameplay code, installs no dependencies and changes no build configuration.
+The PC and laptop share code and documents through Git; generated files, local worlds and credentials remain machine-local. Commit/push/pull operations follow the user's project instructions. Architecture documents describe intended behavior; only verified implementation and `MODLOG.md` evidence establish what currently works.
 
 Resolve these decisions at their milestone rather than inventing answers now:
 
